@@ -1,0 +1,28 @@
+services:
+  server-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - "./html:/var/www/html"
+    depends_on:
+      - server-postgres
+    environment:
+      DB_PROD_HOST: server-postgres
+      DB_PROD_NAME: prod
+      DB_TEST_HOST: server-postgres
+      DB_TEST_NAME: prod   # ✅ MUST be prod, not test
+      DB_USER: postgres
+      DB_PASS: 12345
+
+  server-postgres:
+    image: postgres:15.3
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: prod
+    ports:
+      - "5432:5432"
